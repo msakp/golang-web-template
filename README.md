@@ -9,11 +9,11 @@
 ## [DEV]
 
 ```shell
-	# run locally
-	sudo docker-compose -f dev.yml up -d
-	make run
+# run locally
+sudo docker-compose -f dev.yml up -d
+make run
 ```
 ## [PROD] 
 ```shell
-	# prodcontest version. N/IMPL
+# prodcontest version. N/IMPL
 ```
