@@ -1,4 +1,11 @@
 # Golang clean-arch Web Template
+
+## [DOCS]
+
+```shell
+# swagger docs on server. N/IMPL
+```
+
 ## [DEV]
 
 ```shell
@@ -8,5 +15,5 @@
 ```
 ## [PROD] 
 ```shell
-	# not implemented yet.
+	# prodcontest version. N/IMPL
 ```
