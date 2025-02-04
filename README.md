@@ -11,7 +11,7 @@
 ### [DEV]
 
 ```shell
-# run locally
+# run locally (go v1.23.5 installed)
 sudo docker-compose -f dev.yml up -d
 make run
 ```
