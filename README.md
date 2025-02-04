@@ -25,6 +25,6 @@ make run
 ### [MakeFile]
 
 - **make run** - builds and runs server locally on 8080.
-- **make fmt** - formats source code by standards. 
+- **make fmt** - formats source code using gofmt. 
 - **make sqlc** - generates sqlc code for newly added queries.
 
