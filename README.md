@@ -1,19 +1,30 @@
 # Golang clean-arch Web Template
 
-## [DOCS]
+## **Running**
+### [DOCS]
 
 ```shell
 # swagger docs on server. N/IMPL
 ```
 
-## [DEV]
+
+### [DEV]
 
 ```shell
 # run locally
 sudo docker-compose -f dev.yml up -d
 make run
 ```
-## [PROD] 
+### [PROD] 
 ```shell
 # prodcontest version. N/IMPL
 ```
+
+## **Usage**
+
+### [MakeFile]
+
+- **make run** - builds and runs server locally on 8080.
+- **make fmt** - formats source code by standards. 
+- **make sqlc** - generates sqlc code for newly added queries.
+
