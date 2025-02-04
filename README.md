@@ -1,2 +1,5 @@
-# golang-web-template
-golang clean architecture web template
+# [DEV] start locally
+	```
+	sudo docker-compose -f dev.yml up -d
+	make run
+	```
