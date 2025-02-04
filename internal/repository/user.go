@@ -3,30 +3,31 @@ package repository
 import (
 	"context"
 
-	contracts "github.com/msakp/golang-web-template/domain/cotracts"
-	"github.com/msakp/golang-web-template/domain/dto"
-	"github.com/msakp/golang-web-template/internal/infrastructure/bind"
+	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/infrastructure/database"
 	"github.com/msakp/golang-web-template/internal/infrastructure/database/sqlc/storage"
 )
 
 var _ contracts.UserRepository = (*userRepo)(nil)
 
-type userRepo struct{
+type userRepo struct {
 	query *storage.Queries
-	ctx context.Context
+	ctx   context.Context
 }
 
-
-func NewUserRepository(db *database.Pg) *userRepo{
+func NewUserRepository(db *database.Pg) *userRepo {
 	return &userRepo{
 		query: db.Queries(),
-		ctx: db.Context(),
+		ctx:   db.Context(),
 	}
 }
 
+func (r *userRepo) Create(u *storage.CreateUserParams) error {
 
-func (r *userRepo) Create(u *dto.UserRegister) error{
-	p := bind.WithUserRegister(u)	
-	return r.query.CreateUser(r.ctx, p)
+	return r.query.CreateUser(r.ctx, *u)
+}
+
+func (r *userRepo) Get(email string) (*storage.User, error) {
+	u, err := r.query.GetUser(r.ctx, email)
+	return &u, err
 }

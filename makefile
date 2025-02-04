@@ -8,7 +8,7 @@ run: build
 
 
 fmt:
-	gofmt -w.
+	gofmt -w .
 
 
 sqlc:

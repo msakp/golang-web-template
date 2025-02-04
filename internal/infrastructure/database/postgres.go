@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -14,19 +15,20 @@ import (
 
 type Pg struct {
 	queries *storage.Queries
-	
-	url string
+
+	url  string
 	conn *pgx.Conn
 	ctx  context.Context
 }
 
-func NewPg(config *config.Config) (*Pg, error) {
+func NewPg(config *config.Config) *Pg {
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, config.PostgresUrl)
 	if err != nil {
-		return nil, err
+		log.Fatalf("DB error: %s", err.Error())
+		return nil
 	}
-	return &Pg{queries: storage.New(conn), ctx: ctx, conn: conn, url: config.PostgresUrl}, nil
+	return &Pg{queries: storage.New(conn), ctx: ctx, conn: conn, url: config.PostgresUrl}
 }
 
 func (d *Pg) CloseConn() {
@@ -34,23 +36,21 @@ func (d *Pg) CloseConn() {
 
 }
 
-func (d *Pg) Migrate() error{
-	m, err := migrate.New("file://internal/infrastructure/database/migrations", d.url + "?sslmode=disable")
+func (d *Pg) Migrate() {
+	m, err := migrate.New("file://internal/infrastructure/database/migrations", d.url+"?sslmode=disable")
 	if err != nil {
-		return err
+		log.Fatalf("Migration error: %s", err.Error())
 	}
 	err = m.Up()
-	if err != nil && !errors.Is(err, migrate.ErrNoChange){
-		return err
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		log.Fatalf("Migration error: %s", err.Error())
 	}
-	return nil
-	
 }
 
-func (d *Pg) Queries() *storage.Queries{
+func (d *Pg) Queries() *storage.Queries {
 	return d.queries
 }
 
-func (d *Pg) Context() context.Context{
+func (d *Pg) Context() context.Context {
 	return d.ctx
 }
