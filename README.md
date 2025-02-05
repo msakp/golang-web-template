@@ -1,5 +1,10 @@
 # Golang clean-arch Web Template
 
+## **Tech**
+- Fiber
+- Sqlc
+- Viper
+
 ## **Running**
 ### [DOCS]
 
