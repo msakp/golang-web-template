@@ -7,9 +7,20 @@
 
 ## **Running**
 ### [DOCS]
-
+**if needed**, add your GOPATH to PATH 
 ```shell
-# openapi docs on server. N/IMPL
+[on linux machine]# export PATH=$GOPATH/bin:$PATH
+
+```
+```shell
+# install go swag executable
+go install github.com/swaggo/swag/cmd/swag@latest
+
+# locally update openapi docs.
+make swag
+
+# look up :)
+{SERVER_ADDRES}/swagger
 ```
 
 ### [DEV]
@@ -17,6 +28,8 @@
 ```shell
 # run locally (go v1.23.5 installed)
 sudo docker-compose -f dev.yml up -d
+
+# includes re-generating openapi docs
 make run
 ```
 ### [PROD] 
@@ -30,8 +43,15 @@ sudo docker-compose up -d
 
 ### [MakeFile]
 
-- **make run** - builds and runs server locally on appropriate port.
+- **make run** - builds, re-generates openapi docs and runs server locally on appropriate port.
 - **make fmt** - formats source code using gofmt. 
 - **make sqlc** - generates sqlc code for newly added queries.
+- **make swag** - generates openapi docs.
 
+
+## TODO
+1) Validation Service
+2) Custom Errors
+3) Custom Logger
+4) Container Registry
 

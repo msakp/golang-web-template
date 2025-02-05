@@ -9,7 +9,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5"
-	"github.com/msakp/golang-web-template/internal/config"
+	"github.com/msakp/golang-web-template/internal/common/config"
 	"github.com/msakp/golang-web-template/internal/infrastructure/database/sqlc/storage"
 )
 

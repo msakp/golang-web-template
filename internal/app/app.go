@@ -7,8 +7,10 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/swagger"
+	_ "github.com/msakp/golang-web-template/docs"
 	v1 "github.com/msakp/golang-web-template/internal/api/handlers/v1"
-	"github.com/msakp/golang-web-template/internal/config"
+	"github.com/msakp/golang-web-template/internal/common/config"
 	"github.com/msakp/golang-web-template/internal/infrastructure/database"
 	"github.com/msakp/golang-web-template/internal/repository"
 	"github.com/msakp/golang-web-template/internal/service"
@@ -53,11 +55,13 @@ func (app *App) engineSetup() {
 }
 
 func (app *App) handlersSetup() {
+	//add swagger spec
+	app.Fiber.Get("/swagger/*", swagger.HandlerDefault)
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
 	// user
 	userRepo := repository.NewUserRepository(app.DB)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, app.Config.SecretKey)
 	userHandler := v1.NewUserHandler(userService)
 	userHandler.Setup(apiV1)
 

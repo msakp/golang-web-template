@@ -2,7 +2,7 @@ build:
 	@echo "[+] BUILDING"
 	@go build -C cmd -o ../bin/app
 
-run: build
+run: build swag
 	@echo "[+] RUNNING"
 	@./bin/app
 
@@ -18,5 +18,10 @@ sqlc:
 test:
 
 
+
+swag:
+	@echo "[+] GENERATING SWAGGER DOC"
+	@swag fmt
+	@swag init -g cmd/main.go
 
 

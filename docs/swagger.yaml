@@ -1,8 +1,51 @@
 basePath: /api/v1
+definitions:
+  dto.UserRegister:
+    properties:
+      email:
+        example: yoyoyo@femail.ru
+        format: email
+        type: string
+      name:
+        example: msa
+        maxLength: 16
+        type: string
+      password:
+        example: qwerty123_AOISROKT(:#*L(*))
+        type: string
+    required:
+    - name
+    type: object
+  dto.UserRegisterResponse:
+    properties:
+      token:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
   title: Golang clean-arch Web Template
   version: "1.0"
-paths: {}
+paths:
+  /user/sign-in:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registers new user and return access token
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.UserRegisterResponse'
+      summary: register new user
+      tags:
+      - users
 swagger: "2.0"

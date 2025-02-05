@@ -14,21 +14,19 @@ type Config struct {
 	SecretKey      string `mapstructure:"SECRET_KEY"`
 }
 
-func (c *Config) InitProd(){
+func (c *Config) InitProd() {
 }
 
-func (c *Config) InitDev(){
+func (c *Config) InitDev() {
 	var (
-		name string = viper.GetString("POSTGRES_USER") 
-		password string = viper.GetString("POSTGRES_PASSWORD") 
-		host string = "localhost" 
-		port string = viper.GetString("POSTGRES_PORT") 
-		db string = viper.GetString("POSTGRES_DB")
+		name     string = viper.GetString("POSTGRES_USER")
+		password string = viper.GetString("POSTGRES_PASSWORD")
+		host     string = "localhost"
+		port     string = viper.GetString("POSTGRES_PORT")
+		db       string = viper.GetString("POSTGRES_DB")
 	)
 	c.PostgresUrl = fmt.Sprintf("postgres://%s:%s@%s:%s/%s", name, password, host, port, db)
 }
-
-
 
 func New() *Config {
 	var config Config = Config{}
@@ -45,9 +43,9 @@ func New() *Config {
 	}
 	config.ServerAddr = fmt.Sprintf("%s:%s", viper.Get("SERVER_HOST"), viper.Get("SERVER_PORT"))
 
-	if config.ProductionMode{
+	if config.ProductionMode {
 		config.InitProd()
-	}else{
+	} else {
 		config.InitDev()
 	}
 	return &config
