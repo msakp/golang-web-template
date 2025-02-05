@@ -18,10 +18,10 @@ FROM golang:1.23-alpine AS runner
 
 WORKDIR /opt
 
-# copy executable from builder
+# copy executable and dependencies from builder
+COPY .env ./
 COPY --from=builder /opt/bin/application ./
-COPY --from=builder /opt/.env ./
 
-
+EXPOSE 3000
 # run application
-RUN ["./application"]
+CMD ["./application"]

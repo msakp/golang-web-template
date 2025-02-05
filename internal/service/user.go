@@ -1,7 +1,6 @@
 package service
 
 import (
-
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
 	"github.com/msakp/golang-web-template/internal/infrastructure/wrapper"
@@ -21,7 +20,7 @@ func NewUserService(ur contracts.UserRepository) *userService {
 
 func (s *userService) Create(u *dto.UserRegister) error {
 	createParams := wrapper.WithUserRegister(u)
-	
+
 	return s.userRepo.Create(createParams)
 }
 

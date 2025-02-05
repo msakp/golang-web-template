@@ -8,10 +8,27 @@ import (
 )
 
 type Config struct {
-	ServerAddr  string
-	PostgresUrl string `mapstructure:"POSTGRES_URL"`
-	SecretKey   string `mapstructure:"SECRET_KEY"`
+	ProductionMode bool `mapstructure:"PROD"`
+	ServerAddr     string
+	PostgresUrl    string `mapstructure:"POSTGRES_URL"`
+	SecretKey      string `mapstructure:"SECRET_KEY"`
 }
+
+func (c *Config) InitProd(){
+}
+
+func (c *Config) InitDev(){
+	var (
+		name string = viper.GetString("POSTGRES_USER") 
+		password string = viper.GetString("POSTGRES_PASSWORD") 
+		host string = "localhost" 
+		port string = viper.GetString("POSTGRES_PORT") 
+		db string = viper.GetString("POSTGRES_DB")
+	)
+	c.PostgresUrl = fmt.Sprintf("postgres://%s:%s@%s:%s/%s", name, password, host, port, db)
+}
+
+
 
 func New() *Config {
 	var config Config = Config{}
@@ -27,5 +44,11 @@ func New() *Config {
 		return nil
 	}
 	config.ServerAddr = fmt.Sprintf("%s:%s", viper.Get("SERVER_HOST"), viper.Get("SERVER_PORT"))
+
+	if config.ProductionMode{
+		config.InitProd()
+	}else{
+		config.InitDev()
+	}
 	return &config
 }
