@@ -1,8 +1,6 @@
 package v1
 
 import (
-	"fmt"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
@@ -37,7 +35,6 @@ func (uh *userHandler) Get(c *fiber.Ctx) error {
 }
 
 func (uh *userHandler) Create(c *fiber.Ctx) error {
-	start := time.Now()
 	userRegister := new(dto.UserRegister)
 	if err := c.BodyParser(userRegister); err != nil {
 		return c.Status(400).JSON(fiber.Map{"err": err.Error()})
@@ -46,5 +43,5 @@ func (uh *userHandler) Create(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"err": err.Error()})
 	}
-	return c.Status(200).JSON(fiber.Map{"status": "ok", "time": fmt.Sprintf("%s", time.Since(start))})
+	return c.Status(200).JSON(fiber.Map{"status": "ok", })
 }

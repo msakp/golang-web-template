@@ -39,6 +39,7 @@ func (app *App) init() {
 
 func (app *App) connectDB() {
 	app.DB = database.NewPg(app.Config)
+	app.DB.Migrate()
 }
 
 func (app *App) engineSetup() {
