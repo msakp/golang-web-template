@@ -9,7 +9,7 @@
 ### [DOCS]
 **if needed**, add your GOPATH to PATH 
 ```shell
-[on linux machine]# export PATH=$GOPATH/bin:$PATH
+[on linux machine]$ export PATH=$GOPATH/bin:$PATH
 
 ```
 ```shell
