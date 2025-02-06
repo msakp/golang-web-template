@@ -8,8 +8,8 @@ import (
 )
 
 type Config struct {
-	ProductionMode bool `mapstructure:"PROD"`
 	ServerAddr     string
+	ProductionMode bool `mapstructure:"PROD"`
 	PostgresUrl    string `mapstructure:"POSTGRES_URL"`
 	SecretKey      string `mapstructure:"SECRET_KEY"`
 }
