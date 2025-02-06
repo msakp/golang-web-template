@@ -1,9 +1,10 @@
 # Golang clean-arch Web Template
 
 ## **Tech**
-- Fiber
-- Sqlc
-- Viper
+**Web Framework**: Fiber
+**Postgersql Driver**: Sqlc
+**Config Engine:** Viper
+**Docs**: swaggo/swag
 
 ## **Running**
 ### [DOCS]
