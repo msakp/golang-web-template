@@ -5,11 +5,15 @@ definitions:
       err:
         example: some error description
         type: string
+    required:
+    - err
     type: object
   dto.UserAuthResponse:
     properties:
       token:
         type: string
+    required:
+    - token
     type: object
   dto.UserLogin:
     properties:
@@ -27,7 +31,6 @@ definitions:
     properties:
       email:
         example: yoyoyo@femail.ru
-        format: email
         type: string
       name:
         example: msa
@@ -37,7 +40,9 @@ definitions:
         example: qwerty123_AOISROKT(:#*L(*))
         type: string
     required:
+    - email
     - name
+    - password
     type: object
 host: localhost:3000
 info:

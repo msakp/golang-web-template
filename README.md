@@ -36,10 +36,10 @@ make run
 ### [PROD] 
 **.env PROD=True**
 ```shell
-sudo docker-compose up -d
+sudo docker-compose up --build -d
 ```
 
-
+i
 ## **Usage**
 
 ### [MakeFile]

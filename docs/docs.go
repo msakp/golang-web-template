@@ -97,6 +97,9 @@ const docTemplate = `{
     "definitions": {
         "dto.HttpErr": {
             "type": "object",
+            "required": [
+                "err"
+            ],
             "properties": {
                 "err": {
                     "type": "string",
@@ -106,6 +109,9 @@ const docTemplate = `{
         },
         "dto.UserAuthResponse": {
             "type": "object",
+            "required": [
+                "token"
+            ],
             "properties": {
                 "token": {
                     "type": "string"
@@ -132,12 +138,13 @@ const docTemplate = `{
         "dto.UserRegister": {
             "type": "object",
             "required": [
-                "name"
+                "email",
+                "name",
+                "password"
             ],
             "properties": {
                 "email": {
                     "type": "string",
-                    "format": "email",
                     "example": "yoyoyo@femail.ru"
                 },
                 "name": {
