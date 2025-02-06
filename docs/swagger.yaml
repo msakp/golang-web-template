@@ -1,5 +1,28 @@
 basePath: /api/v1
 definitions:
+  dto.HttpErr:
+    properties:
+      err:
+        example: some error description
+        type: string
+    type: object
+  dto.UserAuthResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  dto.UserLogin:
+    properties:
+      email:
+        example: yoyoyo@femail.ru
+        type: string
+      password:
+        example: qwerty234sraiekvaroisehw{}$
+        type: string
+    required:
+    - email
+    - password
+    type: object
   dto.UserRegister:
     properties:
       email:
@@ -16,12 +39,7 @@ definitions:
     required:
     - name
     type: object
-  dto.UserRegisterResponse:
-    properties:
-      token:
-        type: string
-    type: object
-host: localhost:8080
+host: localhost:3000
 info:
   contact: {}
   title: Golang clean-arch Web Template
@@ -32,7 +50,32 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Registers new user and return access token
+      - description: Logins existed user and returns access token
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserAuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpErr'
+      summary: login existed user
+      tags:
+      - users
+  /user/sign-up:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registers new user and returns access token
         in: body
         name: RequestBody
         required: true
@@ -44,7 +87,11 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.UserRegisterResponse'
+            $ref: '#/definitions/dto.UserAuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpErr'
       summary: register new user
       tags:
       - users

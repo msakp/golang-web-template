@@ -10,8 +10,9 @@ type UserRepository interface {
 	Get(email string) (*storage.User, error)
 }
 
-
 type UserService interface {
 	Register(u *dto.UserRegister) (token string, err error)
+	Login(uLogin *dto.UserLogin) (token string, err error)
+
 	Get(email string) (*dto.UserView, error)
 }

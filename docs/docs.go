@@ -26,10 +26,49 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "login existed user",
+                "parameters": [
+                    {
+                        "description": "Logins existed user and returns access token",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserAuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sign-up": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
                 "summary": "register new user",
                 "parameters": [
                     {
-                        "description": "Registers new user and return access token",
+                        "description": "Registers new user and returns access token",
                         "name": "RequestBody",
                         "in": "body",
                         "required": true,
@@ -42,7 +81,13 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.UserRegisterResponse"
+                            "$ref": "#/definitions/dto.UserAuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
                         }
                     }
                 }
@@ -50,6 +95,40 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.HttpErr": {
+            "type": "object",
+            "properties": {
+                "err": {
+                    "type": "string",
+                    "example": "some error description"
+                }
+            }
+        },
+        "dto.UserAuthResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserLogin": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "yoyoyo@femail.ru"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "qwerty234sraiekvaroisehw{}$"
+                }
+            }
+        },
         "dto.UserRegister": {
             "type": "object",
             "required": [
@@ -71,14 +150,6 @@ const docTemplate = `{
                     "example": "qwerty123_AOISROKT(:#*L(*))"
                 }
             }
-        },
-        "dto.UserRegisterResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
         }
     }
 }`
@@ -86,7 +157,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:3000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Golang clean-arch Web Template",

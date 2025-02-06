@@ -9,7 +9,7 @@ func WithUserRegister(u *dto.UserRegister) *storage.CreateUserParams {
 	return &storage.CreateUserParams{
 		Name:     u.Name,
 		Email:    u.Email,
-		Password: u.PasswordUnhashed,
+		Password: u.PasswordHashed,
 	}
 }
 

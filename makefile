@@ -2,7 +2,7 @@ build:
 	@echo "[+] BUILDING"
 	@go build -C cmd -o ../bin/app
 
-run: build swag
+run: swag build
 	@echo "[+] RUNNING"
 	@./bin/app
 

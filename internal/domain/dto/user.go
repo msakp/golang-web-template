@@ -7,11 +7,16 @@ type UserRegister struct {
 	PasswordHashed   string `json:"-"`
 }
 
+type UserLogin struct {
+	Email            string `json:"email" validate:"required" example:"yoyoyo@femail.ru"`
+	PasswordUnHashed string `json:"password" validate:"required" example:"qwerty234sraiekvaroisehw{}$"`
+}
+
 type UserView struct {
 	Name  string
 	Email string
 }
 
-type UserRegisterResponse struct {
+type UserAuthResponse struct {
 	Token string `json:"token"`
 }

@@ -56,7 +56,7 @@ func (app *App) engineSetup() {
 
 func (app *App) handlersSetup() {
 	//add swagger spec
-	app.Fiber.Get("/swagger/*", swagger.HandlerDefault)
+	app.Fiber.Get("/docs/*", swagger.HandlerDefault)
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
 	// user

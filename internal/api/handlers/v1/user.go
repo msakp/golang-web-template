@@ -35,27 +35,49 @@ func (uh *userHandler) Create(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"status": "ok"})
 }
 
-// Register godoc
+
+// RegisterUser godoc
 //
 //	@Tags		users
 //	@Summary	register new user
-//	@Param		RequestBody	body	dto.UserRegister	true	"Registers new user and return access token"
+//	@Param		RequestBody	body	dto.UserRegister	true	"Registers new user and returns access token"
 //	@Accept		json
 //	@Produce	json
-//	@Success	201	{object}	dto.UserRegisterResponse
-//	@Router		/user/sign-in [post]
+//	@Success	201	{object}	dto.UserAuthResponse
+//	@Failure	400	{object}	dto.HttpErr
+//	@Router		/user/sign-up [post]
 func (uh *userHandler) Register(c *fiber.Ctx) error {
 	userRegister := new(dto.UserRegister)
 	if err := c.BodyParser(userRegister); err != nil {
-		return c.Status(400).JSON(fiber.Map{"err": err.Error()})
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
 	token, err := uh.userService.Register(userRegister)
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"err": err.Error()})
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
-	return c.Status(201).JSON(dto.UserRegisterResponse{Token: token})
+	return c.Status(201).JSON(dto.UserAuthResponse{Token: token})
 }
 
+
+// LoginUser godoc
+//
+//	@Tags		users
+//	@Summary	login existed user
+//	@Param		RequestBody	body	dto.UserLogin	true	"Logins existed user and returns access token"
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	dto.UserAuthResponse
+//	@Failure	400	{object}	dto.HttpErr
+//	@Router		/user/sign-in [post]
 func (uh *userHandler) Login(c *fiber.Ctx) error {
-	return nil
+	userLogin := new(dto.UserLogin)
+	if err := c.BodyParser(userLogin); err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
+	}
+	token, err := uh.userService.Login(userLogin)
+	if err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
+	}
+	return c.Status(200).JSON(dto.UserAuthResponse{Token: token})
+
 }
