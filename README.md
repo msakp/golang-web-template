@@ -20,7 +20,7 @@ go install github.com/swaggo/swag/cmd/swag@latest
 make swag
 
 # look up :)
-{SERVER_ADDRES}/swagger
+{SERVER_ADDRES}/docs
 ```
 
 ### [DEV]
