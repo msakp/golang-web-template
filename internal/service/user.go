@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/msakp/golang-web-template/internal/common/utils"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
@@ -23,39 +24,39 @@ func NewUserService(ur contracts.UserRepository, secretKey string) *userService 
 	}
 }
 
-func (s *userService) Register(u *dto.UserRegister) (token string, err error) {
-	_, err = s.userRepo.Get(u.Email)
+func (s *userService) Register(u *dto.UserRegister) (token string, id uuid.UUID, err error) {
+	_, err = s.userRepo.GetByEmail(u.Email)
 	if err == nil {
-		return token, errors.New("email already registered")
+		return token, id, errors.New("email already registered")
 	}
 	u.PasswordHashed = utils.HashPassword(u.PasswordUnhashed)
 
 	createParams := wrapper.WithUserRegister(u)
-	err = s.userRepo.Create(createParams)
+	id, err = s.userRepo.Create(createParams)
 	if err != nil {
-		return token, err
+		return token, id, err
 	}
 	token, err = utils.GenerateToken(createParams.Email, s.secretKey)
-	return token, err
+	return token, id, err
 
 }
 
-func (s *userService) Login(uLogin *dto.UserLogin) (token string, err error) {
-	user, err := s.userRepo.Get(uLogin.Email)
+func (s *userService) Login(uLogin *dto.UserLogin) (token string, id uuid.UUID, err error) {
+	user, err := s.userRepo.GetByEmail(uLogin.Email)
 	if err != nil {
-		return token, errors.New("no user registered on this email")
+		return token, id, errors.New("no user registered on this email")
 	}
 	ok := utils.CompareHashAndPassword(user.Password, uLogin.PasswordUnHashed)
 	if !ok {
-		return token, errors.New("password mismatch")
+		return token, id, errors.New("password mismatch")
 	}
 	token, err = utils.GenerateToken(uLogin.Email, s.secretKey)
-	return token, err
+	return token, id, err
 
 }
 
-func (s *userService) Get(email string) (*dto.UserView, error) {
-	user, err := s.userRepo.Get(email)
+func (s *userService) GetProfile(email string) (*dto.UserView, error) {
+	user, err := s.userRepo.GetByEmail(email)
 	if err != nil {
 		return nil, err
 	}

@@ -15,6 +15,45 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "get user profile data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access token 'Bearer {token}'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserView"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
+                    }
+                }
+            }
+        },
         "/user/sign-in": {
             "post": {
                 "consumes": [
@@ -110,9 +149,13 @@ const docTemplate = `{
         "dto.UserAuthResponse": {
             "type": "object",
             "required": [
+                "id",
                 "token"
             ],
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "token": {
                     "type": "string"
                 }
@@ -157,6 +200,30 @@ const docTemplate = `{
                     "example": "qwerty123_AOISROKT(:#*L(*))"
                 }
             }
+        },
+        "dto.UserView": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "me@femail.ru"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "vanya228"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "SOME_HASHED_PASSWD"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

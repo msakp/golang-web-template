@@ -62,7 +62,7 @@ func (app *App) handlersSetup() {
 	// user
 	userRepo := repository.NewUserRepository(app.DB)
 	userService := service.NewUserService(userRepo, app.Config.SecretKey)
-	userHandler := v1.NewUserHandler(userService)
+	userHandler := v1.NewUserHandler(userService, app.Config.SecretKey)
 	userHandler.Setup(apiV1)
 
 }

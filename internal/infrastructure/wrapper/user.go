@@ -17,5 +17,6 @@ func ToUserView(u *storage.User) *dto.UserView {
 	return &dto.UserView{
 		Name:  u.Name,
 		Email: u.Email,
+		PasswordHashed: u.Password,
 	}
 }

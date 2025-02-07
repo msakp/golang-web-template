@@ -7,11 +7,12 @@ package storage
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :exec
-insert into users(name, email, password)
-values ($1, $2, $3)
+insert into users(name, email, password) values ($1, $2, $3)
 `
 
 type CreateUserParams struct {
@@ -21,18 +22,32 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-
 	_, err := q.db.Exec(ctx, createUser, arg.Name, arg.Email, arg.Password)
 	return err
 }
 
-const getUser = `-- name: GetUser :one
-select id, name, email, password from users
-where email = $1
+const getUserByEmail = `-- name: GetUserByEmail :one
+select id, name, email, password from users where email = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRow(ctx, getUser, email)
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+select id, name, email, password from users where id = $1
+`
+
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
 	var i User
 	err := row.Scan(
 		&i.ID,

@@ -10,9 +10,12 @@ definitions:
     type: object
   dto.UserAuthResponse:
     properties:
+      id:
+        type: string
       token:
         type: string
     required:
+    - id
     - token
     type: object
   dto.UserLogin:
@@ -44,12 +47,48 @@ definitions:
     - name
     - password
     type: object
+  dto.UserView:
+    properties:
+      email:
+        example: me@femail.ru
+        type: string
+      name:
+        example: vanya228
+        type: string
+      password:
+        example: SOME_HASHED_PASSWD
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact: {}
   title: Golang clean-arch Web Template
   version: "1.0"
 paths:
+  /user/me:
+    get:
+      parameters:
+      - description: access token 'Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserView'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpErr'
+      security:
+      - Bearer: []
+      summary: get user profile data
+      tags:
+      - users
   /user/sign-in:
     post:
       consumes:
@@ -100,4 +139,9 @@ paths:
       summary: register new user
       tags:
       - users
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

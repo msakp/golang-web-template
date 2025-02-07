@@ -5,11 +5,11 @@
 package storage
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 type User struct {
-	ID       pgtype.UUID
+	ID       uuid.UUID
 	Name     string
 	Email    string
 	Password string
