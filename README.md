@@ -7,21 +7,22 @@
 **Docs**: swaggo/swag  
 
 ## **Running**
-### [DOCS]
-**if needed**, add your GOPATH to PATH 
+### [DOCS] READ
+```shell
+# launch backend and lookup:)
+{SERVER_ADDRESS}/docs
+```
+### [DOCS] GENERATE
+**if needed**, add your GOPATH to PATH
 ```shell
 [on linux machine]$ export PATH=$GOPATH/bin:$PATH
 
-```
-```shell
 # install go swag executable
 go install github.com/swaggo/swag/cmd/swag@latest
 
 # locally update openapi docs.
 make swag
 
-# look up :)
-{SERVER_ADDRES}/docs
 ```
 
 ### [DEV]
@@ -30,7 +31,7 @@ make swag
 # run locally (go v1.23.5 installed)
 sudo docker-compose -f dev.yml up -d
 
-# includes re-generating openapi docs
+# regenerates openapi docs also
 make run
 ```
 ### [PROD] 
