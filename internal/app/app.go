@@ -66,8 +66,9 @@ func (app *App) handlersSetup() {
 
 	// user
 	userRepo := repository.NewUserRepository(app.DB)
-	userService := service.NewUserService(userRepo, app.Config.SecretKey)
-	userHandler := v1.NewUserHandler(userService, app.Config.SecretKey)
+	authService := service.NewAuthService(app.Config.SecretKey)
+	userService := service.NewUserService(authService, userRepo)
+	userHandler := v1.NewUserHandler(userService, authService)
 	userHandler.Setup(apiV1)
 
 }

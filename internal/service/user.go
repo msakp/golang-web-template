@@ -16,14 +16,12 @@ var _ contracts.UserService = (*userService)(nil)
 type userService struct {
 	authService contracts.AuthService
 	userRepo  contracts.UserRepository
-	secretKey string
 }
 
-func NewUserService(as contracts.AuthService, ur contracts.UserRepository, secretKey string) *userService {
+func NewUserService(as contracts.AuthService, ur contracts.UserRepository) *userService {
 	return &userService{
 		authService: as,
 		userRepo:  ur,
-		secretKey: secretKey,
 	}
 }
 

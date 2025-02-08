@@ -5,7 +5,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/msakp/golang-web-template/internal/api/middleware"
-	"github.com/msakp/golang-web-template/internal/common/utils"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
 )
@@ -26,7 +25,7 @@ func (uh *userHandler) Setup(r fiber.Router) {
 	u := r.Group("/user")
 	u.Post("/sign-up", uh.Register)
 	u.Post("/sign-in", uh.Login)
-	u.Get("/me", middleware.Auth(), uh.GetInfo)
+	u.Get("/me", middleware.Auth(uh.authService), uh.GetInfo)
 
 }
 
@@ -91,7 +90,7 @@ func (uh *userHandler) Login(c *fiber.Ctx) error {
 //	@Router		/user/me [get]
 func (uh *userHandler) GetInfo(c *fiber.Ctx) error{
 	tokenString := strings.Split(c.Get("Authorization"), " ")
-	email, _ := utils.GetSubFromToken(tokenString[1], uh.secretKey)
+	email, _ := uh.authService.GetSubFromToken(tokenString[1])
 	user, err := uh.userService.GetProfile(c.Context(), email)
 	if err != nil{
 		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
