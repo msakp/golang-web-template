@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,10 +23,10 @@ type App struct {
 	DB     *database.Pg
 }
 
-func NewApp() *App {
+func NewApp(ctx context.Context) *App {
 	var app App
 	app.Config = config.New()
-	app.init()
+	app.init(ctx)
 	return &app
 }
 
@@ -33,14 +34,14 @@ func (app *App) Start() {
 	log.Fatal(app.Fiber.Listen(app.Config.ServerAddr))
 }
 
-func (app *App) init() {
-	app.connectDB()
+func (app *App) init(ctx context.Context) {
+	app.connectDB(ctx)
 	app.engineSetup()
-	app.handlersSetup()
+	app.handlersSetup(ctx)
 }
 
-func (app *App) connectDB() {
-	app.DB = database.NewPg(app.Config)
+func (app *App) connectDB(ctx context.Context) {
+	app.DB = database.NewPg(ctx, app.Config)
 	app.DB.Migrate()
 }
 
@@ -54,15 +55,17 @@ func (app *App) engineSetup() {
 	}))
 }
 
-func (app *App) handlersSetup() {
-	//add swagger spec
-	app.Fiber.Get("/docs/*", swagger.HandlerDefault)
+func (app *App) handlersSetup(ctx context.Context) {
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
+
+	//add swagger spec
+	apiV1.Get("docs/*", swagger.HandlerDefault)
+
 	// user
 	userRepo := repository.NewUserRepository(app.DB)
 	userService := service.NewUserService(userRepo, app.Config.SecretKey)
 	userHandler := v1.NewUserHandler(userService, app.Config.SecretKey)
-	userHandler.Setup(apiV1)
+	userHandler.Setup(ctx, apiV1)
 
 }

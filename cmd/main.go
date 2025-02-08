@@ -1,6 +1,10 @@
 package main
 
-import "github.com/msakp/golang-web-template/internal/app"
+import (
+	"context"
+
+	"github.com/msakp/golang-web-template/internal/app"
+)
 
 //	@title		Golang clean-arch Web Template
 //	@version	1.0
@@ -12,6 +16,7 @@ import "github.com/msakp/golang-web-template/internal/app"
 //	@name						Authorization
 //	@descrtiption				"access token 'Bearer {token}'"
 func main() {
-	app := app.NewApp()
+	ctx := context.Background()
+	app := app.NewApp(ctx)
 	app.Start()
 }

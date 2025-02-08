@@ -17,24 +17,18 @@ type Pg struct {
 	queries *storage.Queries
 
 	url  string
-	conn *pgx.Conn
-	ctx  context.Context
 }
 
-func NewPg(config *config.Config) *Pg {
-	ctx := context.Background()
+func NewPg(ctx context.Context, config *config.Config) *Pg {
 	conn, err := pgx.Connect(ctx, config.PostgresUrl)
 	if err != nil {
 		log.Fatalf("DB error: %s", err.Error())
 		return nil
 	}
-	return &Pg{queries: storage.New(conn), ctx: ctx, conn: conn, url: config.PostgresUrl}
+	return &Pg{queries: storage.New(conn), url: config.PostgresUrl}
 }
 
-func (d *Pg) CloseConn() {
-	d.conn.Close(d.ctx)
 
-}
 
 func (d *Pg) Migrate() {
 	m, err := migrate.New("file://internal/infrastructure/database/migrations", d.url+"?sslmode=disable")
@@ -49,8 +43,4 @@ func (d *Pg) Migrate() {
 
 func (d *Pg) Queries() *storage.Queries {
 	return d.queries
-}
-
-func (d *Pg) Context() context.Context {
-	return d.ctx
 }

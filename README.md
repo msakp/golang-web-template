@@ -10,7 +10,7 @@
 ### [DOCS] READ
 ```shell
 # launch backend and lookup:)
-{SERVER_ADDRESS}/docs
+{SERVER_ADDRESS}/api/v1/docs
 ```
 ### [DOCS] GENERATE
 **if needed**, add your GOPATH to PATH

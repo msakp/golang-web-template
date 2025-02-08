@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 
 	"github.com/google/uuid"
@@ -24,15 +25,15 @@ func NewUserService(ur contracts.UserRepository, secretKey string) *userService 
 	}
 }
 
-func (s *userService) Register(u *dto.UserRegister) (token string, id uuid.UUID, err error) {
-	_, err = s.userRepo.GetByEmail(u.Email)
+func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (token string, id uuid.UUID, err error) {
+	_, err = s.userRepo.GetByEmail(ctx, u.Email)
 	if err == nil {
 		return token, id, errors.New("email already registered")
 	}
 	u.PasswordHashed = utils.HashPassword(u.PasswordUnhashed)
 
 	createParams := wrapper.WithUserRegister(u)
-	id, err = s.userRepo.Create(createParams)
+	id, err = s.userRepo.Create(ctx, createParams)
 	if err != nil {
 		return token, id, err
 	}
@@ -41,8 +42,8 @@ func (s *userService) Register(u *dto.UserRegister) (token string, id uuid.UUID,
 
 }
 
-func (s *userService) Login(uLogin *dto.UserLogin) (token string, id uuid.UUID, err error) {
-	user, err := s.userRepo.GetByEmail(uLogin.Email)
+func (s *userService) Login(ctx context.Context, uLogin *dto.UserLogin) (token string, id uuid.UUID, err error) {
+	user, err := s.userRepo.GetByEmail(ctx, uLogin.Email)
 	if err != nil {
 		return token, id, errors.New("no user registered on this email")
 	}
@@ -55,8 +56,8 @@ func (s *userService) Login(uLogin *dto.UserLogin) (token string, id uuid.UUID, 
 
 }
 
-func (s *userService) GetProfile(email string) (*dto.UserView, error) {
-	user, err := s.userRepo.GetByEmail(email)
+func (s *userService) GetProfile(ctx context.Context, email string) (*dto.UserView, error) {
+	user, err := s.userRepo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
