@@ -12,13 +12,13 @@ import (
 
 type userHandler struct {
 	userService contracts.UserService
-	secretKey string
+	authService contracts.AuthService
 }
 
-func NewUserHandler(us contracts.UserService, secretKey string) *userHandler {
+func NewUserHandler(us contracts.UserService, as contracts.AuthService) *userHandler {
 	return &userHandler{
 		userService: us,
-		secretKey: secretKey,
+		authService: as,
 	}
 }
 
@@ -26,7 +26,7 @@ func (uh *userHandler) Setup(r fiber.Router) {
 	u := r.Group("/user")
 	u.Post("/sign-up", uh.Register)
 	u.Post("/sign-in", uh.Login)
-	u.Get("/me", middleware.Auth(uh.secretKey), uh.GetInfo)
+	u.Get("/me", middleware.Auth(), uh.GetInfo)
 
 }
 

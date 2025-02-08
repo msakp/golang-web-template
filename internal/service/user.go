@@ -14,12 +14,14 @@ import (
 var _ contracts.UserService = (*userService)(nil)
 
 type userService struct {
+	authService contracts.AuthService
 	userRepo  contracts.UserRepository
 	secretKey string
 }
 
-func NewUserService(ur contracts.UserRepository, secretKey string) *userService {
+func NewUserService(as contracts.AuthService, ur contracts.UserRepository, secretKey string) *userService {
 	return &userService{
+		authService: as,
 		userRepo:  ur,
 		secretKey: secretKey,
 	}
@@ -37,7 +39,7 @@ func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (token 
 	if err != nil {
 		return token, id, err
 	}
-	token, err = utils.GenerateToken(createParams.Email, s.secretKey)
+	token, err = s.authService.GenerateToken(createParams.Email)
 	return token, id, err
 
 }
@@ -51,7 +53,7 @@ func (s *userService) Login(ctx context.Context, uLogin *dto.UserLogin) (token s
 	if !ok {
 		return token, id, errors.New("password mismatch")
 	}
-	token, err = utils.GenerateToken(uLogin.Email, s.secretKey)
+	token, err = s.authService.GenerateToken(uLogin.Email)
 	return token, id, err
 
 }

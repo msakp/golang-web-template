@@ -6,13 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/msakp/golang-web-template/internal/common/utils"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/spf13/viper"
 )
 
-func Auth(secretKey string) fiber.Handler{
+func Auth() fiber.Handler{
 
 return func(c *fiber.Ctx) error{
-	secretKey := viper.GetString("SECRET_KEY")
 	bearer := c.Get("Authorization")
 	splited := strings.Split(bearer, " ")
 	if len(splited) != 2{
