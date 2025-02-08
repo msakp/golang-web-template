@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func AuthMiddleware(secretKey string) fiber.Handler{
+func Auth(secretKey string) fiber.Handler{
 
 return func(c *fiber.Ctx) error{
 	secretKey := viper.GetString("SECRET_KEY")

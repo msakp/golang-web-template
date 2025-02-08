@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"context"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,13 +22,14 @@ func NewUserHandler(us contracts.UserService, secretKey string) *userHandler {
 	}
 }
 
-func (uh *userHandler) Setup(ctx context.Context, r fiber.Router) {
+func (uh *userHandler) Setup(r fiber.Router) {
 	u := r.Group("/user")
-	u.Post("/sign-up", uh.Register(ctx))
-	u.Post("/sign-in", uh.Login(ctx))
-	u.Get("/me", middleware.AuthMiddleware(uh.secretKey), uh.GetInfo(ctx))
+	u.Post("/sign-up", uh.Register)
+	u.Post("/sign-in", uh.Login)
+	u.Get("/me", middleware.Auth(uh.secretKey), uh.GetInfo)
 
 }
+
 
 // RegisterUser godoc
 //
@@ -41,25 +41,17 @@ func (uh *userHandler) Setup(ctx context.Context, r fiber.Router) {
 //	@Success	201	{object}	dto.UserAuthResponse
 //	@Failure	400	{object}	dto.HttpErr
 //	@Router		/user/sign-up [post]
-func (uh *userHandler) Register(ctx context.Context) fiber.Handler{
-
-
-	return func(c *fiber.Ctx) error {
-		userRegister := new(dto.UserRegister)
-
-		if err := c.BodyParser(userRegister); err != nil {
-			return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
-		}
-
-		token, id, err := uh.userService.Register(ctx, userRegister)
-		if err != nil {
-			return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
-		}
-
-		return c.Status(201).JSON(dto.UserAuthResponse{Token: token, Id: id})
+func (uh *userHandler) Register(c *fiber.Ctx) error {
+	userRegister := new(dto.UserRegister)
+	if err := c.BodyParser(userRegister); err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
+	token, id, err := uh.userService.Register(c.Context(), userRegister)
+	if err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
+	}
+	return c.Status(201).JSON(dto.UserAuthResponse{Token: token, Id: id})
 }
-
 
 
 // LoginUser godoc
@@ -72,22 +64,16 @@ func (uh *userHandler) Register(ctx context.Context) fiber.Handler{
 //	@Success	200	{object}	dto.UserAuthResponse
 //	@Failure	400	{object}	dto.HttpErr
 //	@Router		/user/sign-in [post]
-func (uh *userHandler) Login(ctx context.Context) fiber.Handler{
-
-	return func(c *fiber.Ctx) error{
-		userLogin := new(dto.UserLogin)
-		
-		if err := c.BodyParser(userLogin); err != nil {
-			return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
-		}
-
-		token, id, err := uh.userService.Login(context.TODO(), userLogin)
-		if err != nil {
-			return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
-		}
-
-		return c.Status(200).JSON(dto.UserAuthResponse{Token: token, Id: id})
+func (uh *userHandler) Login(c *fiber.Ctx) error {
+	userLogin := new(dto.UserLogin)
+	if err := c.BodyParser(userLogin); err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
+	token, id, err := uh.userService.Login(c.Context(), userLogin)
+	if err != nil {
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
+	}
+	return c.Status(200).JSON(dto.UserAuthResponse{Token: token, Id: id})
 
 }
 
@@ -103,16 +89,12 @@ func (uh *userHandler) Login(ctx context.Context) fiber.Handler{
 //	@Success	200	{object}	dto.UserView
 //	@Failure	401	{object}	dto.HttpErr
 //	@Router		/user/me [get]
-func (uh *userHandler) GetInfo(ctx context.Context) fiber.Handler{
-	return func(c *fiber.Ctx) error{
-		tokenString := strings.Split(c.Get("Authorization"), " ")
-		email, _ := utils.GetSubFromToken(tokenString[1], uh.secretKey)
-
-		user, err := uh.userService.GetProfile(context.TODO(), email)
-		if err != nil{
-			return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
-		}
-		
-		return c.Status(200).JSON(user)
+func (uh *userHandler) GetInfo(c *fiber.Ctx) error{
+	tokenString := strings.Split(c.Get("Authorization"), " ")
+	email, _ := utils.GetSubFromToken(tokenString[1], uh.secretKey)
+	user, err := uh.userService.GetProfile(c.Context(), email)
+	if err != nil{
+		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
+	return c.Status(200).JSON(user)
 }

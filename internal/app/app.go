@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/swagger"
 	_ "github.com/msakp/golang-web-template/docs"
 	v1 "github.com/msakp/golang-web-template/internal/api/handlers/v1"
+	"github.com/msakp/golang-web-template/internal/api/middleware"
 	"github.com/msakp/golang-web-template/internal/common/config"
 	"github.com/msakp/golang-web-template/internal/infrastructure/database"
 	"github.com/msakp/golang-web-template/internal/repository"
@@ -36,7 +37,7 @@ func (app *App) Start() {
 
 func (app *App) init(ctx context.Context) {
 	app.connectDB(ctx)
-	app.engineSetup()
+	app.engineSetup(ctx)
 	app.handlersSetup(ctx)
 }
 
@@ -45,7 +46,7 @@ func (app *App) connectDB(ctx context.Context) {
 	app.DB.Migrate()
 }
 
-func (app *App) engineSetup() {
+func (app *App) engineSetup(ctx context.Context) {
 	app.Fiber = fiber.New()
 	app.Fiber.Use(recover.New())
 	app.Fiber.Use(logger.New())
@@ -53,6 +54,7 @@ func (app *App) engineSetup() {
 		AllowOrigins: "http://0.0.0.0:3000",
 		AllowMethods: "*",
 	}))
+	app.Fiber.Use(middleware.CustomContext(ctx))
 }
 
 func (app *App) handlersSetup(ctx context.Context) {
@@ -66,6 +68,6 @@ func (app *App) handlersSetup(ctx context.Context) {
 	userRepo := repository.NewUserRepository(app.DB)
 	userService := service.NewUserService(userRepo, app.Config.SecretKey)
 	userHandler := v1.NewUserHandler(userService, app.Config.SecretKey)
-	userHandler.Setup(ctx, apiV1)
+	userHandler.Setup(apiV1)
 
 }
