@@ -12,12 +12,14 @@ import (
 type userHandler struct {
 	userService contracts.UserService
 	authService contracts.AuthService
+	validatorService contracts.ValidatorService
 }
 
-func NewUserHandler(us contracts.UserService, as contracts.AuthService) *userHandler {
+func NewUserHandler(us contracts.UserService, as contracts.AuthService, vs contracts.ValidatorService) *userHandler {
 	return &userHandler{
 		userService: us,
 		authService: as,
+		validatorService: vs,
 	}
 }
 
@@ -44,6 +46,10 @@ func (uh *userHandler) Register(c *fiber.Ctx) error {
 	userRegister := new(dto.UserRegister)
 	if err := c.BodyParser(userRegister); err != nil {
 		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
+	}
+	ok := uh.validatorService.ValidateRequestData(userRegister)
+	if !ok{
+		return c.Status(400).JSON(fiber.Map{})
 	}
 	token, id, err := uh.userService.Register(c.Context(), userRegister)
 	if err != nil {

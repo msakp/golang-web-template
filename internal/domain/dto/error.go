@@ -1,5 +1,7 @@
 package dto
 
 type HttpErr struct {
-	Message string `json:"err" validate:"required" example:"some error description"`
+	HttpCode int `json:"-"`
+	Data interface{} `json:"data" validate:"required" example:"some error description"`
 }
+

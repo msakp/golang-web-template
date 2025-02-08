@@ -193,6 +193,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "maxLength": 16,
+                    "minLength": 3,
                     "example": "msa"
                 },
                 "password": {

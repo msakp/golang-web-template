@@ -63,12 +63,15 @@ func (app *App) handlersSetup() {
 
 	//add swagger spec
 	apiV1.Get("docs/*", swagger.HandlerDefault)
+	// globalServices
+	validationService := service.NewValidatorService()
+	authService := service.NewAuthService(app.Config.SecretKey)
 
 	// user
 	userRepo := repository.NewUserRepository(app.DB)
-	authService := service.NewAuthService(app.Config.SecretKey)
+
 	userService := service.NewUserService(authService, userRepo)
-	userHandler := v1.NewUserHandler(userService, authService)
+	userHandler := v1.NewUserHandler(userService, authService, validationService)
 	userHandler.Setup(apiV1)
 
 }

@@ -38,6 +38,7 @@ definitions:
       name:
         example: msa
         maxLength: 16
+        minLength: 3
         type: string
       password:
         example: qwerty123_AOISROKT(:#*L(*))
