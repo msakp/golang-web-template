@@ -38,7 +38,7 @@ func (app *App) Start() {
 func (app *App) init(ctx context.Context) {
 	app.connectDB(ctx)
 	app.engineSetup(ctx)
-	app.handlersSetup(ctx)
+	app.handlersSetup()
 }
 
 func (app *App) connectDB(ctx context.Context) {
@@ -57,7 +57,7 @@ func (app *App) engineSetup(ctx context.Context) {
 	app.Fiber.Use(middleware.CustomContext(ctx))
 }
 
-func (app *App) handlersSetup(ctx context.Context) {
+func (app *App) handlersSetup() {
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
 
