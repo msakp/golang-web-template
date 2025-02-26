@@ -20,7 +20,7 @@ WORKDIR /opt
 
 # copy executable and dependencies from builder
 COPY --from=builder /opt/.env ./
-COPY --from=builder /opt/internal/infrastructure/database/migrations ./internal/infrastructure/database/migrations
+COPY --from=builder /opt/internal/database/migrations ./internal/database/migrations
 COPY --from=builder /opt/bin/application ./
 
 EXPOSE 3000
