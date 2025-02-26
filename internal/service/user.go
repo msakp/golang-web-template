@@ -5,27 +5,28 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/msakp/golang-web-template/internal/common/utils"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/infrastructure/wrapper"
+	"github.com/msakp/golang-web-template/internal/domain/wrapper"
+	"github.com/msakp/golang-web-template/pkg/utils"
 )
 
 var _ contracts.UserService = (*userService)(nil)
 
 type userService struct {
+	userRepo    contracts.UserRepository
 	authService contracts.AuthService
-	userRepo  contracts.UserRepository
 }
 
-func NewUserService(as contracts.AuthService, ur contracts.UserRepository) *userService {
+func NewUserService(ur contracts.UserRepository, as contracts.AuthService) *userService {
 	return &userService{
+		userRepo:    ur,
 		authService: as,
-		userRepo:  ur,
 	}
 }
 
 func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (token string, id uuid.UUID, err error) {
+
 	_, err = s.userRepo.GetByEmail(ctx, u.Email)
 	if err == nil {
 		return token, id, errors.New("email already registered")
@@ -38,6 +39,7 @@ func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (token 
 		return token, id, err
 	}
 	token, err = s.authService.GenerateToken(createParams.Email)
+
 	return token, id, err
 
 }
@@ -52,6 +54,7 @@ func (s *userService) Login(ctx context.Context, uLogin *dto.UserLogin) (token s
 		return token, id, errors.New("password mismatch")
 	}
 	token, err = s.authService.GenerateToken(uLogin.Email)
+
 	return token, id, err
 
 }

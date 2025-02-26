@@ -1,0 +1,41 @@
+version: '3'
+
+interval: 500ms
+
+tasks:
+  setup-db:
+    internal: true
+    desc: setting up database dependencies (like postgres, etc.)
+    cmds:
+      - sudo docker-compose -f dev.yml up -d
+
+  build-deps:
+    watch: true
+    internal: true
+    desc: building dependencies(some code gen, code formatting, etc.)
+    cmds:
+      - gofmt -w .
+      - ./pkg/swag/swag fmt
+      - ./pkg/swag/swag init -g cmd/main.go
+      - cd pkg/sqlc &&
+        bash generate.sh
+
+  build-server:
+    watch: true
+    internal: true
+    desc: compiling server binary
+    cmds:
+      - go build -o bin/server cmd/main.go
+
+  server:
+    desc: running server (pre-compiles deps and initializes connections)
+    cmds:
+      - task: setup-db
+      - task: build-deps
+      - task: build-server
+      - ./bin/server
+
+  test:
+    desc: run e2e tests
+      
+    

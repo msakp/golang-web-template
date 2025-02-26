@@ -1,12 +1,14 @@
 package v1
 
 import (
-	"strings"
+	"fmt"
 
+	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/msakp/golang-web-template/internal/api/middleware"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
+	"github.com/msakp/golang-web-template/pkg/logger"
 )
 
 type userHandler struct {
@@ -21,14 +23,17 @@ func NewUserHandler(us contracts.UserService, as contracts.AuthService) *userHan
 	}
 }
 
-func (uh *userHandler) Setup(r fiber.Router) {
+func (uh *userHandler) Setup(r fiber.Router, secretKey string) {
+	authMiddle := jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte(secretKey)},
+		ContextKey: "subject",
+	})
 	u := r.Group("/user")
 	u.Post("/sign-up", uh.Register)
 	u.Post("/sign-in", uh.Login)
-	u.Get("/me", middleware.Auth(uh.authService), uh.GetInfo)
+	u.Get("/me", authMiddle, uh.GetInfo)
 
 }
-
 
 // RegisterUser godoc
 //
@@ -52,7 +57,6 @@ func (uh *userHandler) Register(c *fiber.Ctx) error {
 	return c.Status(201).JSON(dto.UserAuthResponse{Token: token, Id: id})
 }
 
-
 // LoginUser godoc
 //
 //	@Tags		users
@@ -68,7 +72,7 @@ func (uh *userHandler) Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(userLogin); err != nil {
 		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
-	token, id, err := uh.userService.Login(c.Context(), userLogin)
+	token, id, err := uh.userService.Login(c.UserContext(), userLogin)
 	if err != nil {
 		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
@@ -76,23 +80,26 @@ func (uh *userHandler) Login(c *fiber.Ctx) error {
 
 }
 
-
-
 // Profile godoc
 //
 //	@Tags		users
 //	@Summary	get user profile data
 //	@Security	Bearer
-//  @Param Authorization header string true "access token 'Bearer {token}'"
+//	@Param		Authorization	header	string	true	"access token 'Bearer {token}'"
 //	@Produce	json
 //	@Success	200	{object}	dto.UserView
 //	@Failure	401	{object}	dto.HttpErr
 //	@Router		/user/me [get]
-func (uh *userHandler) GetInfo(c *fiber.Ctx) error{
-	tokenString := strings.Split(c.Get("Authorization"), " ")
-	email, _ := uh.authService.GetSubFromToken(tokenString[1])
-	user, err := uh.userService.GetProfile(c.Context(), email)
-	if err != nil{
+func (uh *userHandler) GetInfo(c *fiber.Ctx) error {
+	token := c.Locals("subject").(*jwt.Token)
+	email, err := uh.authService.GetSubject(token)
+
+	if err != nil {
+		logger.FromCtx(c.UserContext()).Error(c.UserContext(), fmt.Sprintf("AuthService err: %s", err.Error()))
+		return c.Status(500).JSON(dto.HttpErr{Message: "PIZDEC"})
+	}
+	user, err := uh.userService.GetProfile(c.UserContext(), email)
+	if err != nil {
 		return c.Status(400).JSON(dto.HttpErr{Message: err.Error()})
 	}
 	return c.Status(200).JSON(user)

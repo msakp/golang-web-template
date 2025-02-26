@@ -12,16 +12,16 @@ import (
 	_ "github.com/msakp/golang-web-template/docs"
 	v1 "github.com/msakp/golang-web-template/internal/api/handlers/v1"
 	"github.com/msakp/golang-web-template/internal/api/middleware"
-	"github.com/msakp/golang-web-template/internal/common/config"
-	"github.com/msakp/golang-web-template/internal/infrastructure/database"
+	"github.com/msakp/golang-web-template/internal/config"
 	"github.com/msakp/golang-web-template/internal/repository"
 	"github.com/msakp/golang-web-template/internal/service"
+	"github.com/msakp/golang-web-template/pkg/connections/postgres"
 )
 
 type App struct {
 	Config *config.Config
 	Fiber  *fiber.App
-	DB     *database.Pg
+	DB     *postgres.DB
 }
 
 func NewApp(ctx context.Context) *App {
@@ -42,8 +42,8 @@ func (app *App) init(ctx context.Context) {
 }
 
 func (app *App) connectDB(ctx context.Context) {
-	app.DB = database.NewPg(ctx, app.Config)
-	app.DB.Migrate()
+	app.DB = postgres.New(ctx, app.Config)
+	app.DB.Migrate(ctx)
 }
 
 func (app *App) engineSetup(ctx context.Context) {
@@ -51,24 +51,39 @@ func (app *App) engineSetup(ctx context.Context) {
 	app.Fiber.Use(recover.New())
 	app.Fiber.Use(logger.New())
 	app.Fiber.Use(cors.New(cors.Config{
-		AllowOrigins: "http://0.0.0.0:3000",
+		AllowOrigins: "*",
 		AllowMethods: "*",
 	}))
 	app.Fiber.Use(middleware.CustomContext(ctx))
 }
 
+func (app *App) CloseConnections(ctx context.Context) {
+	app.DB.Close(ctx)
+}
+
+
 func (app *App) handlersSetup() {
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
 
-	//add swagger spec
+	//api global routes
 	apiV1.Get("docs/*", swagger.HandlerDefault)
 
-	// user
-	userRepo := repository.NewUserRepository(app.DB)
+	// global repos
+
+	// global services
 	authService := service.NewAuthService(app.Config.SecretKey)
-	userService := service.NewUserService(authService, userRepo)
+
+	// repos
+	userRepo := repository.NewUserRepository(app.DB)
+
+	// services
+	userService := service.NewUserService(userRepo, authService)
+
+	//handlers
 	userHandler := v1.NewUserHandler(userService, authService)
-	userHandler.Setup(apiV1)
+
+	//handlers setup
+	userHandler.Setup(apiV1, app.Config.SecretKey)
 
 }

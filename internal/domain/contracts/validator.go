@@ -1,6 +1,3 @@
 package contracts
 
-
-type ValidatorService interface{
-	
-}
+type ValidatorService interface{}

@@ -15,12 +15,12 @@ type UserLogin struct {
 }
 
 type UserView struct {
-	Name  string `json:"name" example:"vanya228"`
-	Email string `json:"email" example:"me@femail.ru"`
+	Name           string `json:"name" example:"vanya228"`
+	Email          string `json:"email" example:"me@femail.ru"`
 	PasswordHashed string `json:"password" example:"SOME_HASHED_PASSWD"`
 }
 
 type UserAuthResponse struct {
-	Token string `json:"token" validate:"required"`
-	Id uuid.UUID `json:"id" validate:"required"`
+	Token string    `json:"token" validate:"required"`
+	Id    uuid.UUID `json:"id" validate:"required"`
 }

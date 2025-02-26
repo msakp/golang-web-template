@@ -2,12 +2,8 @@ package contracts
 
 import "github.com/golang-jwt/jwt/v5"
 
-
-
-
-type AuthService interface{
-  GenerateToken(username string) (string, error)
-  ParseToken(tokenString string) (jwt.Claims, error)
-	GetSubFromToken(tokenString string) (string, error)
-  TokenIsFresh(tokenString string) (bool, error)
+type AuthService interface {
+	GenerateToken(subject string) (string, error)
+	GetSubject(tokenString *jwt.Token) (string, error)
+	TokenIsFresh(tokenString *jwt.Token) (bool, error)
 }

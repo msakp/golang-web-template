@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/msakp/golang-web-template/internal/database/storage"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/infrastructure/database/sqlc/storage"
 )
 
 type UserRepository interface {

@@ -6,12 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-
-
-
-func CustomContext(ctx context.Context) fiber.Handler{
-	return func(c *fiber.Ctx) error{
+func CustomContext(ctx context.Context) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		c.SetUserContext(ctx)
 		return c.Next()
-	}	
+	}
 }
