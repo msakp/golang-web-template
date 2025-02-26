@@ -14,7 +14,7 @@ import (
 
 //	@title		Golang clean-arch Web Template
 //	@version	1.0
-//	@host		localhost:3000
+//	@host		localhost:808
 //	@BasePath	/api/v1
 
 // @securitydefinitions.apikey	Bearer
@@ -38,13 +38,11 @@ func main() {
 	app.CloseConnections(ctx)
 }
 
-
 func InterruptHandler(app *app.App, signalCh chan os.Signal, group *sync.WaitGroup) {
 	<-signalCh
-	fmt.Printf("\n*GRACEFULLY* SHUTTING DOWN\n")
+	fmt.Printf("\n**GRACEFULLY SHUTTING DOWN**\n\n")
 	group.Add(1)
 	defer group.Done()
 	app.Fiber.ShutdownWithTimeout(15 * time.Second)
 
 }
-

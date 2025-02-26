@@ -7,6 +7,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/msakp/golang-web-template/internal/database/storage"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
+	"github.com/msakp/golang-web-template/internal/domain/dto"
+	"github.com/msakp/golang-web-template/internal/wrapper"
 	"github.com/msakp/golang-web-template/pkg/connections/postgres"
 )
 
@@ -24,8 +26,14 @@ func NewUserRepository(db *postgres.DB) *userRepo {
 	}
 }
 
-func (r *userRepo) Create(ctx context.Context, u *storage.CreateUserParams) (uuid.UUID, error) {
-	err := r.query.CreateUser(ctx, r.pool, *u)
+func (r *userRepo) Exists(ctx context.Context, email string) bool {
+	ok, _ := r.query.UserExists(ctx, r.pool, email)
+	return ok
+}
+
+func (r *userRepo) Create(ctx context.Context, u *dto.UserRegister) (uuid.UUID, error) {
+	params := wrapper.UserRegisterWithCreateParams(u)
+	err := r.query.CreateUser(ctx, r.pool, *params)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -33,12 +41,12 @@ func (r *userRepo) Create(ctx context.Context, u *storage.CreateUserParams) (uui
 	return user.ID, nil
 }
 
-func (r *userRepo) GetByEmail(ctx context.Context, email string) (*storage.User, error) {
+func (r *userRepo) GetByEmail(ctx context.Context, email string) (*dto.UserView, error) {
 	u, err := r.query.GetUserByEmail(ctx, r.pool, email)
-	return &u, err
+	return wrapper.UserWithView(&u), err
 }
 
-func (r *userRepo) GetById(ctx context.Context, id uuid.UUID) (*storage.User, error) {
+func (r *userRepo) GetById(ctx context.Context, id uuid.UUID) (*dto.UserView, error) {
 	u, err := r.query.GetUserById(ctx, r.pool, id)
-	return &u, err
+	return wrapper.UserWithView(&u), err
 }

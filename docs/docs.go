@@ -50,6 +50,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
                     }
                 }
             }
@@ -89,11 +95,23 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
                     }
                 }
             }
         },
-        "/user/sign-up": {
+        "/users/sign-up": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -128,6 +146,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
                     }
                 }
             }
@@ -137,12 +161,17 @@ const docTemplate = `{
         "dto.HttpErr": {
             "type": "object",
             "required": [
+                "description",
                 "err"
             ],
             "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "verbose error description"
+                },
                 "err": {
                     "type": "string",
-                    "example": "some error description"
+                    "example": "Short error message : 'Not Found' | 'Internal Server Error' | etc"
                 }
             }
         },
@@ -208,6 +237,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "me@femail.ru"
                 },
+                "id": {
+                    "type": "string",
+                    "example": "some-uuid-v4"
+                },
                 "name": {
                     "type": "string",
                     "example": "vanya228"
@@ -231,7 +264,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "localhost:808",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Golang clean-arch Web Template",

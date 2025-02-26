@@ -1,9 +1,13 @@
 package contracts
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"context"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/msakp/golang-web-template/internal/domain/dto"
+)
 
 type AuthService interface {
-	GenerateToken(subject string) (string, error)
-	GetSubject(tokenString *jwt.Token) (string, error)
-	TokenIsFresh(tokenString *jwt.Token) (bool, error)
+	GenerateToken(ctx context.Context, subject string) (string, *dto.HttpErr)
+	GetSubject(ctx context.Context, tokenString *jwt.Token) (string, *dto.HttpErr)
 }

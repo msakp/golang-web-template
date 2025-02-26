@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -32,7 +31,7 @@ func NewApp(ctx context.Context) *App {
 }
 
 func (app *App) Start() {
-	log.Fatal(app.Fiber.Listen(app.Config.ServerAddr))
+	app.Fiber.Listen(app.Config.ServerAddr)
 }
 
 func (app *App) init(ctx context.Context) {
@@ -61,7 +60,6 @@ func (app *App) CloseConnections(ctx context.Context) {
 	app.DB.Close(ctx)
 }
 
-
 func (app *App) handlersSetup() {
 	// route groups
 	apiV1 := app.Fiber.Group("/api/v1")
@@ -73,6 +71,7 @@ func (app *App) handlersSetup() {
 
 	// global services
 	authService := service.NewAuthService(app.Config.SecretKey)
+	validatorService := service.NewValidatorService()
 
 	// repos
 	userRepo := repository.NewUserRepository(app.DB)
@@ -81,7 +80,7 @@ func (app *App) handlersSetup() {
 	userService := service.NewUserService(userRepo, authService)
 
 	//handlers
-	userHandler := v1.NewUserHandler(userService, authService)
+	userHandler := v1.NewUserHandler(userService, authService, validatorService)
 
 	//handlers setup
 	userHandler.Setup(apiV1, app.Config.SecretKey)

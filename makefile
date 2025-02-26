@@ -1,10 +1,18 @@
-build:
-	@echo "[+] BUILDING"
-	@go build -C cmd -o ../bin/app
+up:
+	@echo "[+] CREATING CONTAINERS"
+	@sudo docker-compose -f dev.yml up -d
 
-run: swag build
+down:
+	@echo "[+] REMOVING CONTAINERS"
+	@sudo docker-compose -f dev.yml down
+
+build: fmt sqlc swag
+	@echo "[+] BUILDING"
+	@go build -C cmd -o ../bin/server
+
+server: build
 	@echo "[+] RUNNING"
-	@./bin/app
+	@./bin/server
 
 
 fmt:
@@ -13,15 +21,17 @@ fmt:
 
 sqlc:
 	@echo "[+] GENERATING SQL"
-	@cd internal/infrastructure/database/sqlc;	bash generate.sh
+	@cd pkg/sqlc;	bash generate.sh
+
 
 test:
-
+	@echo "[+] TESTING"
+	@go test ./tests/e2e -v -count=1 -run Main
 
 
 swag:
 	@echo "[+] GENERATING SWAGGER DOC"
-	@swag fmt
-	@swag init -g cmd/main.go
+	@pkg/swag/swag fmt
+	@pkg/swag/swag init -g cmd/main.go
 
 

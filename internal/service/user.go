@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/msakp/golang-web-template/internal/domain/contracts"
 	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/domain/wrapper"
+	"github.com/msakp/golang-web-template/internal/wrapper"
+	"github.com/msakp/golang-web-template/pkg/logger"
 	"github.com/msakp/golang-web-template/pkg/utils"
 )
 
@@ -25,44 +25,56 @@ func NewUserService(ur contracts.UserRepository, as contracts.AuthService) *user
 	}
 }
 
-func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (token string, id uuid.UUID, err error) {
-
-	_, err = s.userRepo.GetByEmail(ctx, u.Email)
-	if err == nil {
-		return token, id, errors.New("email already registered")
+func (s *userService) Register(ctx context.Context, u *dto.UserRegister) (*dto.UserAuthResponse, *dto.HttpErr) {
+	if s.userRepo.Exists(ctx, u.Email) {
+		return nil, wrapper.NotFoundErr(dto.MsgUserAlreadyExists)
 	}
-	u.PasswordHashed = utils.HashPassword(u.PasswordUnhashed)
 
-	createParams := wrapper.WithUserRegister(u)
-	id, err = s.userRepo.Create(ctx, createParams)
+	id, err := s.userRepo.Create(ctx, u)
 	if err != nil {
-		return token, id, err
+		logger.FromCtx(ctx).Error(ctx, fmt.Sprintf("failed to create user with ERR: %s", err.Error()))
+		return nil, wrapper.InternalServerErr(err.Error())
 	}
-	token, err = s.authService.GenerateToken(createParams.Email)
 
-	return token, id, err
+	token, httpErr := s.authService.GenerateToken(ctx, u.Email)
+	if httpErr != nil {
+		logger.FromCtx(ctx).Error(ctx, fmt.Sprintf("generate token failed with ERR: %s", httpErr.Error()))
+		return nil, httpErr
+	}
+
+	return &dto.UserAuthResponse{Id: id, Token: token}, nil
 
 }
 
-func (s *userService) Login(ctx context.Context, uLogin *dto.UserLogin) (token string, id uuid.UUID, err error) {
+func (s *userService) Login(ctx context.Context, uLogin *dto.UserLogin) (*dto.UserAuthResponse, *dto.HttpErr) {
 	user, err := s.userRepo.GetByEmail(ctx, uLogin.Email)
 	if err != nil {
-		return token, id, errors.New("no user registered on this email")
+		return nil, wrapper.NotFoundErr(dto.MsgUserNotFound)
 	}
-	ok := utils.CompareHashAndPassword(user.Password, uLogin.PasswordUnHashed)
-	if !ok {
-		return token, id, errors.New("password mismatch")
-	}
-	token, err = s.authService.GenerateToken(uLogin.Email)
 
-	return token, id, err
+	ok := utils.CompareHashAndPassword(user.PasswordHashed, uLogin.PasswordUnHashed)
+	if !ok {
+		return nil, wrapper.BadRequestErr(dto.MsgInvalidPassword)
+	}
+
+	token, httpErr := s.authService.GenerateToken(ctx, uLogin.Email)
+	if httpErr != nil {
+		logger.FromCtx(ctx).Error(ctx, fmt.Sprintf("generate token failed with ERR: %s", httpErr.Error()))
+		return nil, httpErr
+	}
+
+	return &dto.UserAuthResponse{Id: user.Id, Token: token}, nil
 
 }
 
-func (s *userService) GetProfile(ctx context.Context, email string) (*dto.UserView, error) {
+func (s *userService) GetProfile(ctx context.Context, email string) (*dto.UserView, *dto.HttpErr) {
+	if !s.userRepo.Exists(ctx, email) {
+		return nil, wrapper.NotFoundErr(dto.MsgUserNotFound)
+	}
 	user, err := s.userRepo.GetByEmail(ctx, email)
 	if err != nil {
-		return nil, err
+		logger.FromCtx(ctx).Error(ctx, fmt.Sprintf("failed to get user from db with ERR: %s", err.Error()))
+		return nil, wrapper.InternalServerErr(err.Error())
 	}
-	return wrapper.ToUserView(user), nil
+	return user, nil
 }

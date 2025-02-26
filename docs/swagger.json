@@ -5,7 +5,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:3000",
+    "host": "localhost:808",
     "basePath": "/api/v1",
     "paths": {
         "/user/me": {
@@ -40,6 +40,12 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
@@ -82,11 +88,23 @@
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
                     }
                 }
             }
         },
-        "/user/sign-up": {
+        "/users/sign-up": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -121,6 +139,12 @@
                         "schema": {
                             "$ref": "#/definitions/dto.HttpErr"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpErr"
+                        }
                     }
                 }
             }
@@ -130,12 +154,17 @@
         "dto.HttpErr": {
             "type": "object",
             "required": [
+                "description",
                 "err"
             ],
             "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "verbose error description"
+                },
                 "err": {
                     "type": "string",
-                    "example": "some error description"
+                    "example": "Short error message : 'Not Found' | 'Internal Server Error' | etc"
                 }
             }
         },
@@ -200,6 +229,10 @@
                 "email": {
                     "type": "string",
                     "example": "me@femail.ru"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "some-uuid-v4"
                 },
                 "name": {
                     "type": "string",

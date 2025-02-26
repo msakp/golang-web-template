@@ -49,7 +49,6 @@ func (d *DB) Migrate(ctx context.Context) {
 	}
 }
 
-
 func (d *DB) Close(ctx context.Context) {
 	d.connPool.Close()
 }
