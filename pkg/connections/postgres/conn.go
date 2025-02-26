@@ -9,9 +9,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/msakp/golang-web-template/internal/config"
-	"github.com/msakp/golang-web-template/internal/database/storage"
-	"github.com/msakp/golang-web-template/pkg/logger"
+	"solution/internal/config"
+	"solution/internal/database/storage"
+	"solution/pkg/logger"
 )
 
 const (

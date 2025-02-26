@@ -1,9 +1,9 @@
 package wrapper
 
 import (
-	"github.com/msakp/golang-web-template/internal/database/storage"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/pkg/utils"
+	"solution/internal/database/storage"
+	"solution/internal/domain/dto"
+	"solution/pkg/utils"
 )
 
 func UserRegisterWithCreateParams(u *dto.UserRegister) *storage.CreateUserParams {

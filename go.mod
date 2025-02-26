@@ -1,4 +1,4 @@
-module github.com/msakp/golang-web-template
+module solution
 
 go 1.23.5
 

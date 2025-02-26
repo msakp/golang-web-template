@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/msakp/golang-web-template/internal/app"
-	"github.com/msakp/golang-web-template/pkg/logger"
+	"solution/internal/app"
+	"solution/pkg/logger"
 )
 
 //	@title		Golang clean-arch Web Template

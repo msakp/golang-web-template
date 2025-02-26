@@ -5,11 +5,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/msakp/golang-web-template/internal/database/storage"
-	"github.com/msakp/golang-web-template/internal/domain/contracts"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/wrapper"
-	"github.com/msakp/golang-web-template/pkg/connections/postgres"
+	"solution/internal/database/storage"
+	"solution/internal/domain/contracts"
+	"solution/internal/domain/dto"
+	"solution/internal/wrapper"
+	"solution/pkg/connections/postgres"
 )
 
 var _ contracts.UserRepository = (*userRepo)(nil)

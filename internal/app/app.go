@@ -8,13 +8,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
-	_ "github.com/msakp/golang-web-template/docs"
-	v1 "github.com/msakp/golang-web-template/internal/api/handlers/v1"
-	"github.com/msakp/golang-web-template/internal/api/middleware"
-	"github.com/msakp/golang-web-template/internal/config"
-	"github.com/msakp/golang-web-template/internal/repository"
-	"github.com/msakp/golang-web-template/internal/service"
-	"github.com/msakp/golang-web-template/pkg/connections/postgres"
+	_ "solution/docs"
+	v1 "solution/internal/api/handlers/v1"
+	"solution/internal/api/middleware"
+	"solution/internal/config"
+	"solution/internal/repository"
+	"solution/internal/service"
+	"solution/pkg/connections/postgres"
 )
 
 type App struct {

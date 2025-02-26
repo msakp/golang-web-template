@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/msakp/golang-web-template/internal/domain/contracts"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/wrapper"
-	"github.com/msakp/golang-web-template/pkg/logger"
+	"solution/internal/domain/contracts"
+	"solution/internal/domain/dto"
+	"solution/internal/wrapper"
+	"solution/pkg/logger"
 )
 
 var _ contracts.AuthService = (*authService)(nil)

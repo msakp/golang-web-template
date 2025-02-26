@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/msakp/golang-web-template/internal/domain/contracts"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/wrapper"
-	"github.com/msakp/golang-web-template/pkg/logger"
-	"github.com/msakp/golang-web-template/pkg/utils"
+	"solution/internal/domain/contracts"
+	"solution/internal/domain/dto"
+	"solution/internal/wrapper"
+	"solution/pkg/logger"
+	"solution/pkg/utils"
 )
 
 var _ contracts.UserService = (*userService)(nil)

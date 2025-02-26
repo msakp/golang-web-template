@@ -4,9 +4,9 @@ import (
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/msakp/golang-web-template/internal/domain/contracts"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/wrapper"
+	"solution/internal/domain/contracts"
+	"solution/internal/domain/dto"
+	"solution/internal/wrapper"
 )
 
 type userHandler struct {

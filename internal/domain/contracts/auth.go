@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
+	"solution/internal/domain/dto"
 )
 
 type AuthService interface {

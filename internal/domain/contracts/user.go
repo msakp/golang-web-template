@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
+	"solution/internal/domain/dto"
 )
 
 type UserRepository interface {

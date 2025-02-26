@@ -1,7 +1,7 @@
 package wrapper
 
 import (
-	"github.com/msakp/golang-web-template/internal/domain/dto"
+	"solution/internal/domain/dto"
 )
 
 func ServiceErr(httpCode int, message, description string) *dto.HttpErr {

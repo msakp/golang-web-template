@@ -1,6 +1,6 @@
 package contracts
 
-import "github.com/msakp/golang-web-template/internal/domain/dto"
+import "solution/internal/domain/dto"
 
 type ValidatorService interface {
 	ValidateRequestData(dataModel any) *dto.HttpErr

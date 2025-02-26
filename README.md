@@ -1,10 +1,5 @@
 # Golang clean-arch Web Template
 
-## **Tech**
-**Web Framework**: Fiber  
-**Postgersql Driver**: Sqlc  
-**Config Engine:** Viper  
-**Docs**: swaggo/swag  
 
-
-# 
+### [+] See [Changelog](CHANGELOG.md)
+### [+] See [Styling Guide](CHANGELOG.md)

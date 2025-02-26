@@ -3,9 +3,9 @@ package service
 import (
 	"reflect"
 
-	"github.com/msakp/golang-web-template/internal/domain/contracts"
-	"github.com/msakp/golang-web-template/internal/domain/dto"
-	"github.com/msakp/golang-web-template/internal/wrapper"
+	"solution/internal/domain/contracts"
+	"solution/internal/domain/dto"
+	"solution/internal/wrapper"
 
 	"github.com/go-playground/validator/v10"
 )
