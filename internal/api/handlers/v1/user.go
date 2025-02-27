@@ -1,12 +1,14 @@
 package v1
 
 import (
-	jwtware "github.com/gofiber/contrib/jwt"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	"solution/internal/api/middleware"
 	"solution/internal/domain/contracts"
 	"solution/internal/domain/dto"
 	"solution/internal/wrapper"
+
+	jwtware "github.com/gofiber/contrib/jwt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type userHandler struct {
@@ -24,14 +26,10 @@ func NewUserHandler(us contracts.UserService, as contracts.AuthService, vs contr
 }
 
 func (uh *userHandler) Setup(r fiber.Router, secretKey string) {
-	authMiddle := jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(secretKey)},
-		ContextKey: "subject",
-	})
 	u := r.Group("/users")
 	u.Post("/sign-up", uh.Register)
 	u.Post("/sign-in", uh.Login)
-	u.Get("/me", authMiddle, uh.GetInfo)
+	u.Get("/me", middleware.Auth(secretKey), uh.GetInfo)
 
 }
 
