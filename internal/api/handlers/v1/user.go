@@ -6,7 +6,6 @@ import (
 	"solution/internal/domain/dto"
 	"solution/internal/wrapper"
 
-	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
