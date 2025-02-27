@@ -36,10 +36,10 @@ func (s *validatorService) ValidateRequestData(dto any) *dto.HttpErr {
 	return nil
 }
 
-func (s *validatorService) ValidateRequestSlice(dataModels any) *dto.HttpErr {
+func (s *validatorService) ValidateRequestSlice(dtos any) *dto.HttpErr {
 	// no additional validation required (type assertion of dataModel being a slice is already executed in appropriate handler with fiber.BodyParser())
 	// usage without dataModels type assertion being a slice is prohibited!
-	v := reflect.ValueOf(dataModels)
+	v := reflect.ValueOf(dtos)
 	for i := range v.Len() {
 		err := s.validator.Struct(v.Index(i).Interface())
 		if err != nil {
